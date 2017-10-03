@@ -1,0 +1,26 @@
+#Main
+{
+	Width: 97%;
+	Height: 5%;
+	
+}
+
+#MainView
+{
+	Width: 100%;
+	Height: 100%;
+	Position: Absolute;
+	Top: 20px;
+	overflow: hidden;
+}
+
+#HUDView
+{
+	Width: 400px;
+	Height: 100px;
+	Position: Absolute;
+	Left: 20px;
+	Bottom: 20px;
+	Z-Index: 1000;
+}
+html, body {margin: 0; height: 100%; overflow: hidden}

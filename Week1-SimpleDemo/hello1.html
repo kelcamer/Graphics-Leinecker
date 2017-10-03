@@ -1,0 +1,121 @@
+
+<html>
+
+<head>
+<script src="libs/three.js"></script>
+<script src="libs/keyboard.js"></script>
+</head>
+
+<body>
+
+<script>
+	// command option i runs debugger
+	// click sources, then click your html file and the x
+
+	var renderer;
+	var scene;
+	var camera;
+	var cube;
+	function init()
+	{
+		scene = new THREE.Scene();		// a scene is an area where you can place things.
+		initRenderer();
+		initCamera();
+		
+		addStuff();
+		addSpotLight();
+		
+		// Output to the stream
+		document.body.appendChild( renderer.domElement );
+		
+		// Call render
+		render();
+	}
+
+	function initCamera(){
+
+		
+		camera = new THREE.PerspectiveCamera(
+		// frustum vertical view         aspect ratio							 frustum near plane     frustum far plane
+			45,                          window.innerWidth / window.innerHeight, 0.1,                   1000 );
+
+		camera.position.x = 0;			// sets position of camera
+		camera.position.y = 10;
+		camera.position.z = 10;
+		camera.lookAt( scene.position );			// origin is 0,0,0 
+
+
+	}
+
+	function initRenderer(){
+		renderer = new THREE.WebGLRenderer();
+		//						color     alpha
+		renderer.setClearColor( 0x000000, 1.0 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.shadowMapEnabled = true;
+
+	}
+	
+	function render()
+	{
+		cube.rotation.x += 0.02;
+		cube.rotation.y += 0.02;
+		cube.rotation.z += 0.02;
+		
+		if(Key.isDown(Key.A)){
+			cube.position.x += 0.1;
+		}
+		if(Key.isDown(Key.B)){
+			cube.position.x -= 0.1;
+		}
+		if(Key.isDown(Key.LT)){
+			camera.position.y -=0.02;
+			camera.position.z -=0.02;
+
+		}
+		if(Key.isDown(Key.GT)){
+			camera.position.y +=0.02;
+			camera.position.z +=0.02;
+			
+		}
+		if(Key.isDown(Key.K)){
+			camera.rotation.y -= 0.02;
+			
+		}
+		if(Key.isDown(Key.L)){
+			camera.rotation.y += 0.02;
+			
+		}
+		// Request animation frame
+		requestAnimationFrame( render );
+		// Call render()
+		renderer.render( scene, camera );
+	}
+	
+	function addSpotLight()
+	{
+		var spotLight;
+		spotLight = new THREE.SpotLight(0xffffff);
+		spotLight.position.set(10,20,20);
+		spotLight.shadowCameraNear = 20;
+		spotLight.shadowCameraFar = 50;
+		spotLight.castShadow = true;
+		scene.add(spotLight);				
+	}
+	
+	function addStuff()
+	{
+		var cubeGeometry = new THREE.BoxGeometry(6, 4, 6);
+		var cubeMaterial = new THREE.MeshLambertMaterial({color:'red'});
+		 cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+		cube.castShadow = true;
+		scene.add(cube);
+
+	}
+
+	window.onload = init;	// this calls the initialization function.
+</script>
+
+</body>
+
+</html>
