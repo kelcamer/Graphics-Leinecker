@@ -1,0 +1,93 @@
+<html>
+
+<!-- 1. Boiler Plate Project -->
+
+<head>
+<script src="libs/three.js"></script>
+<script src="libs/keyboard.js"></script>
+<script src="fonts/helvetiker_regular.typeface.js"></script>
+
+</head>
+
+
+<script src="js/candyland.js"></script>
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="css/hudstyle.css">
+
+<script>
+$( function() {
+  $( "#dialog" ).dialog();
+} );
+
+window.addEventListener('keydown', function(e) {
+  if(e.keyCode == 32 && e.target == document.body) {
+    e.preventDefault();
+  }
+});
+/*$("drawCardButton").click(function(){
+    alert("The paragraph was clicked.");
+});*/
+
+</script>
+
+<body>
+<div id="dialog" title="Game Controls for Candy Land">
+
+    <p>
+      When it is your turn, click on the button to draw a card! <br />
+      If you land on a licorice hole, you loose a turn! 
+      
+      <br />
+      If you land on a candy tile, you get to jump to the nearest candy space!
+      
+      <br /><br />
+
+      <b><i>The first person who makes it to the end wins!</i></b>
+    </p>
+
+      <br /><br />
+      How many players do you have?
+      <form action="">
+        <input type="radio" name="numberPlayers" value="1" onclick="addPlayer()"> 1<br>
+        <input type="radio" name="numberPlayers" value="2" onclick="addPlayer()"> 2<br>
+        <input type="radio" name="numberPlayers" value="3" onclick="addPlayer()"> 3<br>
+        <input type="radio" name="numberPlayers" value="4" onclick="addPlayer()"> 4<br>
+      </form>
+
+
+   
+  </div>
+
+ 
+
+	<div id="container"></div>
+    <div id="MainView" style="background:white; height: 2000px; top:-19px; ">
+      <div id="button">
+        <input type="button" style="
+        
+          height:30px;
+          width:90px; 
+          margin-left: 50%;
+          position:absolute;
+          transition: .5s ease;
+          top: 560px;
+          left: 150px;
+       
+          "
+          id="btn" value="Draw a Card" onclick="nextPlayer();"><br />
+        
+      </div>
+
+     
+    </div>
+	
+  <div id="sorry">	Sorry, you lost a turn this round because you stepped on a licorice hole! </div>
+
+  
+</div>
+</body>
+
+</html>
