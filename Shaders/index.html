@@ -1,0 +1,496 @@
+<!--/*
+
+ Kelsey Cameron
+ 
+ 
+ This project creates and uses four shaders.
+ 
+ 1. Simple shader with pattern check! pattern
+ 2. Simple shader with pattern that has simple motion. check! pattern2
+ 3. Shader for cube - check! cube
+ 4. Shader for sphere - check! sphere
+ 
+ 
+Varying Variables are used to connect the vertexShader and fragmentShader classes
+Uniform variables are used to communicate with your vertex or fragment shader from "outside".
+ In your shader you use the uniform qualifier to declare the variable:
+ attribute – Global variables that may change per vertex, that are passed from the OpenGL application to vertex shaders. This qualifier can only be used in vertex shaders. For the shader this is a read-only variable. See Attribute section.
+ uniform – Global variables that may change per primitive [...], that are passed from the OpenGL application to the shaders. This qualifier can be used in both vertex and fragment shaders. For the shaders this is a read-only variable. See Uniform section.
+ varying – used for interpolated data between a vertex shader and a fragment shader. Available for writing in the vertex shader, and read-only in a fragment shader. See Varying section.
+*/-->
+
+<html>
+    <head>
+        <title>threejs - material</title>
+    
+        <style>
+            body{
+                margin: 0;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+    
+        <canvas id="myCanvas"></canvas>
+    
+        <script src="three.js"></script>
+    <script type="x-shader/x-vertex" id="vertexShaderPattern">
+        
+        uniform float delta2;
+        varying vec3 vUv;
+
+        
+        void main(){
+            
+            vUv = position*cos(delta2);
+            // use current position
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position*delta2, 1.0 );
+            
+            
+        }
+        
+        </script>
+    <script type="x-shader/x-fragment" id="fragmentShaderPattern">
+        
+        uniform float delta2;
+        varying vec3 vUv;
+        void main(){
+            
+            float r = sin(tan(vUv.x) );
+            float g = cos(vUv.y );
+            float b = tan(vUv.z );
+            vec3 rgb = vec3(r, g, b);
+            
+            gl_FragColor = vec4(rgb, 1.0);
+           
+            
+        }
+        
+        </script>
+    
+    <script type="x-shader/x-vertex" id="vertexShaderPattern2">
+        
+        uniform float delta2;
+        varying vec3 vUv;
+        
+        
+        void main(){
+            
+            vUv = position;
+            // use current position
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            
+            
+        }
+    
+        </script>
+    <script type="x-shader/x-fragment" id="fragmentShaderPattern2">
+        
+        uniform float delta2;
+        varying vec3 vUv;
+        void main(){
+            
+            float r = delta2*tan(tan(tan(delta2*vUv.x) ));
+            float g = delta2*tan(vUv.y );
+            float b = delta2*tan(vUv.z );
+            
+            gl_FragColor = vec4(r,g,b, 1.0);
+            
+            
+        }
+    
+        </script>
+    
+    
+    <script type="x-shader/x-vertex" id="vertexShaderSphere">
+        varying vec3 vColor;
+        uniform float time;
+        attribute float displacement;
+        uniform float red;
+        uniform float green;
+        uniform float blue;
+        uniform float amplitude;
+
+void main()
+    {
+        
+        vColor = position;
+
+       
+        // creates a modelViewPosition 
+        // modelViewMatrix means where the object is located.
+        // a vector 4 defines 3 rgb values plus opacity
+
+        vec3 newPosition = position * 0.8 * vec3( displacement,displacement ,displacement );
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+
+       
+    }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentShaderSphere">
+        uniform float amplitude;
+       varying vec3 vColor;
+       uniform float time;
+       uniform float red;
+       uniform float green;
+       uniform float blue;
+       
+    void main() {
+        
+        
+       gl_FragColor = vec4( red*vColor.x,green*vColor.y,blue*vColor.z, 1.0 );
+
+    }
+    </script>
+    
+    <script type="x-shader/x-vertex" id="vertexShaderCube">
+    attribute float vertexDisplacement;
+    attribute float opacity;
+    uniform float delta;
+    varying float vOpacity;
+    
+    void main() 
+    {
+        
+        vec3 p = position;
+    
+        p.x += sin(vertexDisplacement) * 200.0;
+        p.y += cos(vertexDisplacement) * -200.;
+        p.z += tan(vertexDisplacement) * 200.;
+        
+        
+        vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
+        
+    }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentShaderCube">
+    uniform float delta;
+    varying float vOpacity;
+    
+
+    void main() {
+        
+        
+        float red = gl_FragCoord.x / 1000.0;            // divide by 1000 to get some values between 0 and 1
+        float blue = gl_FragCoord.y / 800.0;
+        float green = gl_FragCoord.z;
+        gl_FragColor = vec4(red, green, blue, vOpacity);
+    }
+    </script>
+    
+    
+        <script>
+    
+        var renderer,
+            scene,
+            camera,
+            myCanvas = document.getElementById('myCanvas');
+    
+        //RENDERER
+        renderer = new THREE.WebGLRenderer({
+          canvas: myCanvas, 
+          antialias: true
+        });
+        renderer.setClearColor(0x000000);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    
+        //CAMERA
+        camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 300, 0 );
+    
+        //SCENE
+        scene = new THREE.Scene();
+    
+        //LIGHTS
+        var light = new THREE.AmbientLight(0xffffff, 1.0);
+        scene.add(light);
+    
+    var light2 = new THREE.AmbientLight(0xffffff, 1.0);
+    scene.add(light2);
+    
+      
+        
+        //Custom Shader Material
+        var customUniforms ={
+            delta: {value: 1.0},
+           
+        };
+    
+    
+        
+        var customSphereUniforms = {
+      
+            time: {
+                type: 'f', // a float
+                value: 2.0,
+            },
+            red:     {
+                value: 1.0,
+                
+            },
+            green:     {
+                value: 0.5,
+                
+            },
+            blue:     {
+                value: 0.5,
+                
+            },
+            amplitude:
+            {
+                value: 0.5,
+            },
+           
+            
+            
+        };
+        var customColorUniforms = {
+            
+            delta2:
+            {
+                value: 0.0,
+            },
+            
+            
+            
+        }
+        var customColorUniforms2 = {
+            
+            delta2:
+            {
+                value: .01,
+            },
+            
+            
+            
+        }
+        var customSphereAttributes = {
+            
+            displacement: {
+                type: 'f', // a float
+                value: [1.0]
+            }
+            
+        };
+        
+       
+        
+        var materialSphere = new THREE.ShaderMaterial({
+          uniforms: customSphereUniforms,
+          vertexShader: document.getElementById('vertexShaderSphere').textContent,
+          fragmentShader: document.getElementById('fragmentShaderSphere').textContent,
+        
+        
+        });
+        
+        
+        
+        
+        var materialColors = new THREE.ShaderMaterial({
+          uniforms: customColorUniforms,
+          vertexShader: document.getElementById('vertexShaderPattern').textContent,
+          fragmentShader: document.getElementById('fragmentShaderPattern').textContent,
+                                                      });
+        
+        var materialColors2 = new THREE.ShaderMaterial({
+                                                      uniforms: customColorUniforms2,
+                                                      vertexShader: document.getElementById('vertexShaderPattern2').textContent,
+                                                      fragmentShader: document.getElementById('fragmentShaderPattern2').textContent,
+                                                      });
+     var materialCube = new THREE.ShaderMaterial({
+         uniforms: customUniforms,
+         vertexShader: document.getElementById('vertexShaderCube').textContent,
+         fragmentShader: document.getElementById('fragmentShaderCube').textContent,
+                                                 });
+      
+    
+     /*
+        var material = new THREE.ShaderMaterial({
+            uniforms: customUniforms,
+            vertexShader: document.getElementById('vertexShader2').textContent,
+            fragmentShader: document.getElementById('fragmentShader2').textContent
+        });
+    
+    */
+        
+        var boxGeometry = new THREE.BoxBufferGeometry(200, 200, 100, 30, 30, 10);
+        var cube = new THREE.Mesh(boxGeometry, materialCube);
+        cube.position.z = -1000;
+        cube.position.x = -500;
+        
+        scene.add(cube);
+    
+    
+        var colorGeo = new THREE.BoxBufferGeometry(100, 100, 100, 30, 30, 10);
+        var cube2 = new THREE.Mesh(colorGeo, materialColors);
+    
+    cube2.position.z = -1000;
+    cube2.position.y = -200;
+    
+    cube2.rotation.x = Math.PI/4;
+    cube2.rotation.y = Math.PI/4;
+    scene.add(cube2);
+    
+    
+    
+    
+    var colorGeo2 = new THREE.BoxBufferGeometry(1000, 1000, 1000, 30, 30, 10);
+    var cube3 = new THREE.Mesh(colorGeo2, materialColors2);
+    
+    cube3.position.z = -5000;
+    cube3.position.x = 0;
+    cube3.position.y = 600;
+    cube3.rotation.x = Math.PI/4;
+    cube3.rotation.y = Math.PI/4;
+    scene.add(cube3);
+    
+       var sphereGeo = new THREE.SphereBufferGeometry(100, 20, 20, 0, Math.PI*2, 0, Math.PI);
+        var sphere = new THREE.Mesh(sphereGeo, materialSphere);
+      
+        sphere.position.z = -1000;
+        sphere.position.x = 100;
+
+
+        var vertexDisplacement2 = new Float32Array(sphereGeo.attributes.position.count);
+
+        sphereGeo.addAttribute('displacement', new THREE.BufferAttribute(vertexDisplacement2, 1));
+
+
+
+        scene.add(sphere);
+    
+    
+        //attribute
+       var vertexDisplacement = new Float32Array(boxGeometry.attributes.position.count);
+    
+       boxGeometry.addAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
+    
+   
+    
+        //RENDER LOOP
+        render();
+    
+    
+        var delta = 0;
+        var count = 0;
+        var count2 = 0;
+        var count3 = 0;
+        var count4 = 0;
+        function render() {
+           
+           
+           
+           // move cube in a square
+           
+           if(count3 < 300){
+               cube.position.y += 1;
+              // customUniforms.delta.value-=0.01;
+
+           }
+           else if(count3 < 600){
+
+               cube.position.x += 0.5;
+              // customUniforms.delta.value+=0.01;
+
+           }
+           else if(count3 < 900){
+               cube.position.y -=1;
+           }
+           else if(count3 < 1200){
+               cube.position.x -=0.5;
+           }
+           else{
+               count3 = 0;
+           }
+          
+          count3++;
+             
+           
+          
+            if(count2 < 200){
+            customColorUniforms.delta2.value-=0.01;
+                    
+
+            }
+            else if(count2 < 400){
+            customColorUniforms.delta2.value+=0.01;
+
+      
+            }
+            else{
+                count2 = 0;
+                
+            }
+           
+           count2++;
+
+         
+         if(count4 < 200){
+             customColorUniforms2.delta2.value += 0.001;
+
+         }
+         else if(count4 < 400){
+             customColorUniforms2.delta2.value -=0.001;
+
+         }
+         else{
+             count4 = 0;
+            
+         }
+
+
+
+            
+            
+            
+           
+           delta += 0.1;
+         
+            
+            if(delta > 20){
+                delta = 0;
+            }
+            sphere.position.x = 300;
+
+            //attribute
+            for (var i = 0; i < vertexDisplacement.length; i ++) {
+                vertexDisplacement[i] = Math.random();
+       
+                
+            }
+          
+            for(var i = 0; i < vertexDisplacement2.length; i++){
+                vertexDisplacement2[i] = Math.cos((Math.PI/3)) * delta*(Math.random()*0.2 + 0.2);
+            }
+            // attributes are accessible from both c and javascript
+
+
+            
+            
+            cube.geometry.attributes.vertexDisplacement.needsUpdate = true;
+            sphere.geometry.attributes.displacement.needsUpdate = true;
+            
+
+            
+            
+            customSphereUniforms.time.value+=1;
+            
+           
+           sphere.rotation.z += 0.1;
+           sphere.rotation.x += 0.1;
+           sphere.rotation.y += 0.1;
+            // rotates the cube
+          //  cube.rotation.z += 0.1;
+            
+            
+            renderer.render(scene, camera);
+    
+            requestAnimationFrame(render);
+        }
+    
+        </script>
+    </body>
+    </html>
+    

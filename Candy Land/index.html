@@ -1,0 +1,111 @@
+<html>
+
+<!-- 1. Boiler Plate Project -->
+
+<head>
+<script src="libs/three.js"></script>
+<script src="libs/keyboard.js"></script>
+<script src="fonts/helvetiker_regular.typeface.js"></script>
+<script src="loaders/OBJLoader.js"></script>
+<script src="loaders/MTLLoader.js"></script>
+<script src="loaders/OBJMTLLoader.js"></script>
+</head>
+
+
+<script src="js/candyland.js"></script>
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="css/hudstyle.css">
+
+<script>
+$( function() {
+  $( "#dialog" ).dialog();
+} );
+
+window.addEventListener('keydown', function(e) {
+  if(e.keyCode == 32 && e.target == document.body) {
+    e.preventDefault();
+  }
+});
+/*$("drawCardButton").click(function(){
+    alert("The paragraph was clicked.");
+});*/
+
+</script>
+
+<body style="
+
+background: url(images/candy.jpg) 
+no-repeat center center fixed; 
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+">
+<div id="dialog" title="Game Controls for Candy Land">
+
+    <p>
+      When it is your turn, click on the button to draw a card! <br />
+      If you land on a licorice hole, you lose a turn! 
+      
+      <br />
+      Click on the horse to see who it belongs to!
+      
+      <br />
+      Press <b>H</b> to go to the default camera view.<br />
+      Press <b>G</b> to see a top-down view of the board.<br />
+      Press <b>V</b> to zoom in, and <b>B</b> to zoom out.<br />
+      Press <b>Y</b> to see the instructions again!<br />
+      Press <b>A</b> to show which Player each horse represents.<br />
+      Press <b>Enter</b> to auto-play!<br />
+      <br />
+      Sometimes two horses will land on the same spot. <br />
+      When this happens, simply press <b>A</b> again to see both horses at once!<br />
+      <br />
+
+      <b><i>The first person who makes it to the end wins!</i></b>
+    </p>
+
+      
+      How many players do you have?
+      <form action="">
+        <input type="radio" name="numberPlayers" value="1" onclick="addPlayer()"> 1<br>
+        <input type="radio" name="numberPlayers" value="2" onclick="addPlayer()"> 2<br>
+        <input type="radio" name="numberPlayers" value="3" onclick="addPlayer()"> 3<br>
+        <input type="radio" name="numberPlayers" value="4" onclick="addPlayer()"> 4<br>
+      </form>
+
+
+   
+  </div>
+
+ 
+<div id="container"></div>
+    <div id="MainView" style=" height: 2000px; top:-19px;  ">
+      <div id="button">
+	
+        <input type="button" style="
+        
+          height:30px;
+          width:90px; 
+          margin-left: 50%;
+          position:absolute;
+          transition: .5s ease;
+          top: 560px;
+          left: 150px;
+       
+          "
+          id="btn" value="Draw a Card" onclick="nextPlayer();"><br />
+        
+      </div>
+
+     
+    </div>
+ 
+  
+</div>
+</body>
+
+</html>
