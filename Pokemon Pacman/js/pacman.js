@@ -409,7 +409,6 @@
 	{
 		
 	
-
 		if(Key.isDown(Key.LEFTARROW)){
 		 ball.applyCentralImpulse(LEFT);
 		 if(camerastate == 1){

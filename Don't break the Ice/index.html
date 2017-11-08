@@ -1,0 +1,86 @@
+<html>
+
+<!-- 1. Boiler Plate Project -->
+
+<head>
+<script src="libs/three.js"></script>
+<script src="libs/keyboard.js"></script>
+<script src="fonts/helvetiker_regular.typeface.js"></script>
+
+<!-- 2. include phyis.js -->
+<script src="libs/physi.js"></script>
+
+</head>
+
+
+<script src="js/ice.js"></script>
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="css/hudstyle.css">
+
+<script>
+$( function() {
+  $( "#dialog" ).dialog();
+} );
+</script>
+
+<body>
+
+<!--<div id="dialog" title="Game Controls">
+
+    <p>
+      This game is called <b>Don't unleash Charizards fury!</b>
+        <br />Right now, there are four charizards
+         threatening innocent pikachus! <br />
+         It is up to you to catch em all!<br />
+        Each group of pikachus can protect themselves against Charizard, but not for long!<br />
+        Collect each of the pikachus to win the game!<br />
+
+        <br /><br /><br />
+        <i>Game Controls</i>
+        <br /><br />
+       
+      Use the <b>arrow keys</b> to move left, right, up, and down, respectively!
+      <br />
+      Press <b>J</b> to jump over the enemies.<br />
+      Press <b>B</b> to experiment with unique arrow key camera angles!<br />
+      Press <b>C</b> to see the world map!<br />
+
+    
+      <br /><br />
+      Have fun, and good luck!
+       <br /><br />
+      
+     
+      <br /><br />
+      
+    </p>
+  </div>-->
+  <br />
+  <div id="MainView" style=" height: 2000px; top:0px;  ">
+
+    <input type="button" style="
+    
+      height:30px;
+      width:90px; 
+      margin-left: 50%;
+      position:absolute;
+      transition: .5s ease;
+      top: 560px;
+      left: 150px;
+   
+      "
+      id="btn" value="Draw a Card" onclick="nextPlayer();">
+
+
+  </div>
+
+
+
+  
+</div>
+</body>
+
+</html>
