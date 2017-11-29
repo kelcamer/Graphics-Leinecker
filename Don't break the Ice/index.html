@@ -26,54 +26,104 @@ $( function() {
 } );
 </script>
 
-<body>
+<body style="
 
-<!--<div id="dialog" title="Game Controls">
+background: url(images/background.jpg) 
+no-repeat center center fixed; 
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+">
+
+<!-- <script type="x-shader/x-vertex" id="vertexShaderPattern">
+        
+        uniform float delta2;
+        varying vec3 vUv;
+
+        
+        void main(){
+            
+            vUv = position*cos(delta2);
+            // use current position
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position*delta2, 1.0 );
+            
+            
+        }
+        
+        </script>
+    <script type="x-shader/x-fragment" id="fragmentShaderPattern">
+        
+        uniform float delta2;
+        varying vec3 vUv;
+        void main(){
+            
+            float r = sin(tan(vUv.x) );
+            float g = cos(vUv.y );
+            float b = tan(vUv.z );
+            vec3 rgb = vec3(r, g, b);
+            
+            gl_FragColor = vec4(rgb, 1.0);
+           
+            
+        }
+        
+        </script>-->
+
+
+
+<div id="dialog" title="Game Controls">
 
     <p>
-      This game is called <b>Don't unleash Charizards fury!</b>
-        <br />Right now, there are four charizards
-         threatening innocent pikachus! <br />
-         It is up to you to catch em all!<br />
-        Each group of pikachus can protect themselves against Charizard, but not for long!<br />
-        Collect each of the pikachus to win the game!<br />
+       This game is called <b>Don't Break The Ice!</b>
 
-        <br /><br /><br />
-        <i>Game Controls</i>
-        <br /><br />
-       
-      Use the <b>arrow keys</b> to move left, right, up, and down, respectively!
-      <br />
-      Press <b>J</b> to jump over the enemies.<br />
-      Press <b>B</b> to experiment with unique arrow key camera angles!<br />
-      Press <b>C</b> to see the world map!<br />
-
-    
-      <br /><br />
-      Have fun, and good luck!
        <br /><br />
-      
+    The object of the game is to prevent the special middle square from falling. <br /><br />
+    
+      You only get <b>one hit</b> per round.<br /><br />
+      If you play against the computer, it will make it's move automatically.<br /><br />
+      Press <b>C</b> to change the camera.<br />
+      Press <b>B</b> to return the camera to default. <br />
+      Press <b>Y</b> to show the instructions again.<br />
+      Use the slider to change how hard you hit the ice!<br />
+      <br />
+      <br />
+      How many players do you have?
+      <form action="">
+        <input type="radio" name="numberPlayers" value="1" onclick="updatePlayers()" checked="checked"> 1<br>
+        <input type="radio" name="numberPlayers" value="2" onclick="updatePlayers()"> 2<br>
+       
+      </form>
+
+      <br />
+      <br />
+
+    <b>Play with a friend or play with the computer! And have fun!</b>
      
       <br /><br />
       
     </p>
-  </div>-->
+  </div>
   <br />
   <div id="MainView" style=" height: 2000px; top:0px;  ">
+      
+      <input type="range" min="-100" value ="-20" max="0" step=".1" style="
+      
+        height:30px;
+        width:90px; 
+        margin-left: 30%;
+        position:absolute;
+        transition: .5s ease;
+        top: 560px;
+        left: 150px;
+        background-color:white
+     
+        "
+        id="btn" name="slider">
 
-    <input type="button" style="
-    
-      height:30px;
-      width:90px; 
-      margin-left: 50%;
-      position:absolute;
-      transition: .5s ease;
-      top: 560px;
-      left: 150px;
-   
-      "
-      id="btn" value="Draw a Card" onclick="nextPlayer();">
 
+       
+  
 
   </div>
 

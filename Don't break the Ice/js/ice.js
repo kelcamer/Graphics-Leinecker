@@ -11,11 +11,12 @@
 	var frame = new Array(10);
 	//var board = new [10][10];
 	var support = [];
-	var friction = 1.19;
-	var mass = 0.4;
+	var friction = 1.2;
+	var mass = 0.1;
 	
 	var base;
-	var zDOWN = new THREE.Vector3(0, 0, -15);
+	var hammerStrength = -20;
+	var zDOWN = new THREE.Vector3(0, 0, hammerStrength);
 
 	var raycaster = new THREE.Raycaster();
 	var projector = new THREE.Projector();
@@ -34,9 +35,9 @@
 	
 	function init()
 	{
+
 		// board starts at (1,1,20)
 		// Therefore supports must be from (0,0,20) to (0,7,20)
-
 				// 52 dots
 	game = [
 		'M######M',  // 0
@@ -49,8 +50,9 @@
 		'M######M',  // 7
 		
 	];
-
 	
+
+	loadSounds();
 		
 
 		document.onkeydown = function(evt) {
@@ -72,8 +74,13 @@
 		addSpotLight();
 	
 		buildBoard();
-	//	showWord();
-		 base = buildBase();
+		showWord();
+		updateScore();
+		// base = buildBase();
+
+
+				//		middleSquare = addCorner(3.5,3.5,22,mass,2,2,1);
+
 		
 		
 		var container = document.getElementById("MainView");
@@ -88,6 +95,73 @@
 		
 		render();
 	}
+
+	var uniforms3;
+	function addShader(){
+
+		var vShader3 = 
+		'\nuniform float delta2;varying vec3 vUv;\n' + 
+		'varying vec3 vColor;\n'+
+		
+		'void main()\n'+
+		'{ \n'+
+		'vColor = position;\n'+
+		
+		'	gl_Position = projectionMatrix * \n'+
+		'		modelViewMatrix * \n'+
+		'		vec4(position,1.0); \n'+
+		'} \n'+
+		'\n';
+		
+		var fShader3 =
+		'\n' + 
+		'uniform float red; \n'+
+		'uniform float green; \n'+
+		'uniform float blue; \n'+
+		'uniform float delta2; \n' + 
+		'varying vec3 vColor;\n'+
+		'void main()  \n'+
+		'{ \n'+
+		'	gl_FragColor = vec4(sin(tan(red*vColor.x*delta2)), \n'+
+		'						sin(tan(red*vColor.y*delta2)), \n'+
+		'						sin(tan(red*vColor.z*delta2)), \n'+
+		'						1.0); \n'+
+		'} \n'+
+		'\n';
+
+		 uniforms3 = {
+			 red: {type: 'f', value: 1.0 }, 
+			 green: {type: 'f', value: 1.0 }, 
+			 blue: {type: 'f', value: 1.0 }, 
+			 delta2: {type: 'f', value: 0.0 }, 
+			}
+		
+	
+				var mat = new THREE.ShaderMaterial({uniforms:uniforms3,vertexShader:vShader3,fragmentShader:fShader3});
+	/// Shader
+	
+		        	var mat2 = Physijs.createMaterial(mat, friction, 0 );
+	
+        
+                 // 10 500 1000
+                 var geo = new THREE.BoxGeometry( arguments[4], arguments[5], arguments[6] );
+				 var square = new Physijs.BoxMesh(geo, mat2, arguments[3])
+				 
+
+		 square.position.x = arguments[0];
+		 square.position.y = arguments[1];
+		 square.position.z = arguments[2];
+	 
+		 
+		 square.name = "square" + arguments[0] + arguments[1];
+		 scene.add(square);
+
+		 
+		return square;
+
+
+
+	}
 	var boardCreated = 0;
 	function checkKeys(){
 		
@@ -98,6 +172,8 @@
 			camera2.rotation.y = 0;
 			camera2.rotation.x = 0;
 			camera2.rotation.z = 0;
+			
+			
 		}
 		if(Key.isDown(Key.C)){
 			
@@ -105,6 +181,10 @@
 			camera2.position.y = -50;
 			camera2.position.z = 5;
 
+			
+		}
+		if(Key.isDown(Key.Y)){
+			$( "#dialog" ).dialog();
 			
 		}
 		if(Key.isDown(Key.N)){
@@ -115,9 +195,8 @@
 	var backgroundMusic;
 	var chomp;
 	function loadSounds(){
-		backgroundMusic = new Audio("music/pokemon.mp3");
+		backgroundMusic = new Audio("music/song.mp3");
 		backgroundMusic.play();
-		chomp = new Audio("music/pika.mp3");
 	}
 
 	
@@ -180,15 +259,18 @@
 		
 				// top and bottom
 		support.push(addCorner(3.5,7.00,22, 0, 6, 1, 1));
-		support.push(addCorner(3.5,0,22, 0, 6, 1.005, 1));
+		support.push(addCorner(3.5,0,22, 0, 6, 1.05, 1));
 
 
 		// right and left
-		support.push(addCorner(7,3.5,22, 0, 8, 1.005, 1));
+		support.push(addCorner(7,3.5,22, 0, 8, 1.05, 1));
 		support.push(addCorner(0,3.5,22, 0, 8, 1, 1));
 		
-		middleSquare = addCorner(3.5,3.5,22,mass,2,2,1);
+		middleSquare = addShader(3.5,3.5,22,mass,2,2,1);
 		middleSquare.name = "middleSquare";
+
+
+		
 
 	}
 	var randomX;
@@ -205,14 +287,19 @@
 			randomY = Math.round(Math.random() * (5) + 1);
 	
 		}
-		if(frame[randomX][randomY] == null){
+		while(frame[randomX][randomY] == null){
 			randomX = Math.round(Math.random() * (5) + 1);
 			randomY = Math.round(Math.random() * (5) + 1);
 		}
-
-		alert("The computer has chosen (" + randomX + ", " + randomY + ")");
+	//	alert("The computer has chosen (" + randomX + ", " + randomY + ")");
 		
 		frame[randomX][randomY].applyCentralImpulse(zDOWN);
+		if(frame[randomX][randomY].position.z > 10){
+			frame[randomX][randomY].applyCentralImpulse(zDOWN);
+			
+		}
+		frame[randomX][randomY].setAngularVelocity(new THREE.Vector3(0, 0, 0));
+		
 		
 	}
 	function addCorner(args){
@@ -221,7 +308,7 @@
 		
 		 // friction first then restitution
 
-		 var mat = Physijs.createMaterial( new THREE.MeshLambertMaterial({color:0x00BFFF}), 1.19, 0 );
+		 var mat = Physijs.createMaterial( new THREE.MeshLambertMaterial({color:0x00BFFF}), 1.4, 0 );
 		 
 	 
 		 var geo = new THREE.BoxGeometry( arguments[4],arguments[5], arguments[6] );
@@ -233,7 +320,7 @@
 		 square.position.y = arguments[1];
 		 square.position.z = arguments[2];
 		 square.name = "square";
-		 if(arguments[4] == 8 && ((arguments[5] - 1) < 0.006) && arguments[6] == 1 && (arguments[0] == 7 || arguments[0] == 0)){
+		 if(arguments[4] == 8 && ((arguments[5] - 1) < 0.1) && arguments[6] == 1 && (arguments[0] == 7 || arguments[0] == 0)){
 
 			square.rotation.z = Math.PI/2;
 		}
@@ -270,19 +357,71 @@
     return square;
 	}
 	
+	var players = 1;
+	function updatePlayers(){
+		players =  $("input[name='numberPlayers']:checked"). val();
+
+	}
+
 
 		 var width = window.innerWidth;
 		 var height = 1200;
+		 var count = 0;
 	function render()
 	{
-		scene.simulate();
-		//updateScore();
-		checkKeys();
-		requestAnimationFrame( render );
-	
-		renderer.render( scene, camera2 );
-		boardCreated = 1;
 		
+		scene.simulate();
+		updatePlayers();
+		if((endTime - beginTime) > 3000){
+			nextPlayer();
+		}
+		
+		endTime = new Date().getTime();
+		
+			
+		updateScore();
+		checkWinner();
+		checkKeys();
+		if($('input[name=slider]').val() < 0){
+			hammerStrength = $('input[name=slider]').val();
+		}
+	
+		boardCreated = 1;
+
+
+		if(count < 10){
+			uniforms3.delta2.value+=0.1;
+		}
+		else if(count < 20){
+			uniforms3.delta2.value-=0.1;
+		}
+		else{
+			count = 0;
+		}
+		
+		renderer.render( scene, camera2 );
+		
+		requestAnimationFrame( render );
+		
+		
+		
+	}
+	var endGame = 0;
+	function checkWinner(){
+		if(middleSquare.position.z < 21 && endGame == 0){
+			if(state == 0){
+				alert("Player " + (state+1) + " has won the game!\n Sorry, Player " + "2" + ", you loose!");				
+				
+			}
+			else{
+				alert("Player " + (state+1) + " has won the game!\n Sorry, Player " + state + ", you loose!");				
+				
+			}
+			endGame = 1;
+			
+		}
+
+
 	}
 
 	
@@ -331,7 +470,7 @@
 		scoreObject2 = new THREE.Mesh( scoreObjectGeometry2, scoreObjectMaterial2 );
 		scoreObject2.position.x = 0;
 		scoreObject2.position.y = -2;
-		scoreObject2.position.z = 24;
+		scoreObject2.position.z = 28;
 		scoreObject2.rotation.x =0;
 		scoreObject2.rotation.z = 0;
 		scene.add( scoreObject2 );
@@ -353,9 +492,9 @@
 	
 	function setupRenderer()
 	{
-		renderer = new THREE.WebGLRenderer();
-		//renderer = new THREE.WebGLRenderer({alpha: true});
-		renderer.setClearColor( 0xCCCCCC, 0 );
+		//renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({alpha: true});
+		//renderer.setClearColor( 0xCCCCCC, 0 );
 		//renderer.setSize( width,height );
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.shadowMapEnabled = true;
@@ -387,7 +526,7 @@
 		scoreObject = new THREE.Mesh( scoreObjectGeometry, scoreObjectMaterial );
 		scoreObject.position.x = 0.75;
 		scoreObject.position.y = 6;
-		scoreObject.position.z = 25;
+		scoreObject.position.z = 27;
 		scoreObject.rotation.x =0;
 		scoreObject.rotation.z = 0;
 		scene.add( scoreObject );
@@ -418,12 +557,16 @@
 	var projector;
 	var raycaster;
 	var state = 0;
+	var beginTime = 0;
+	var endTime = 0;
+	var d = new Date();
 	function onDocumentMouseDown( event ) 
 	{
-		event.preventDefault();
+		beginTime = new Date().getTime();
 		
+		event.preventDefault();
 
-		if(state == 0){
+		if(state == 0 || players == 2){
 		// creates a new vector based on mouse position
 		var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
 
@@ -459,8 +602,9 @@
 							}
 							obj.setAngularVelocity(new THREE.Vector3(0, 0, 0));
 							
-
+							
 							state = 1;
+							
 							break;
 						}
 
@@ -484,12 +628,18 @@
 	var end = 0;
 	function nextPlayer(){
 		
+
+				
 					if(end!=1){
 		
 					var c = current-1;
 
 					 if(state == 1){
+						 
+
+						if(players == 1){
 						getRandomSquare();
+						}
 						state = 0;
 					}
 				
@@ -522,7 +672,7 @@
         spotLight.shadowCameraNear = 100;
         spotLight.shadowCameraFar = 100;
         spotLight.castShadow = true;
-		spotLight.intensity = 3;
+		spotLight.intensity = 2;
 
 		scene.add(spotLight);
 	
